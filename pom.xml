@@ -241,18 +241,6 @@
                     <nodeVersion>v10.16.2</nodeVersion>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-maven-plugin</artifactId>
-                <version>2.0.13</version>
-                <configuration>
-                    <appName>vaadin-heroku-app</appName>
-                    <processTypes>
-                        <web>java $JAVA_OPTS -jar target/probe-1.0-SNAPSHOT.jar --server.port=$PORT</web>
-                    </processTypes>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -294,6 +282,18 @@
                                 <phase>compile</phase>
                             </execution>
                         </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>com.heroku.sdk</groupId>
+                        <artifactId>heroku-maven-plugin</artifactId>
+                        <version>3.0.2</version>
+                        <configuration>
+                            <appName>vaadin-heroku-app</appName>
+                            <processTypes>
+                                <web>java $JAVA_OPTS -jar target/probe-1.0-SNAPSHOT.jar --server.port=$PORT</web>
+                            </processTypes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
