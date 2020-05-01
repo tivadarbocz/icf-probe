@@ -1,5 +1,6 @@
 package com.icf.backend.bootstrap;
 
+import com.icf.backend.enumeration.AvailableRole;
 import com.icf.backend.model.Role;
 import com.icf.backend.model.User;
 import com.icf.backend.repository.RoleRepository;
@@ -21,10 +22,6 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
-
-    public static final String ADMIN = "ADMIN";
-    public static final String CONTENT_EDITOR = "CONTENT_EDITOR";
-    public static final String LOGGED_IN_USER = "LOGGED_IN_USER";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -49,7 +46,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             admin.setEnabled(true);
             admin.setRoles(
                     Set.of(
-                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(ADMIN)).findFirst().orElse(null))
+                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(AvailableRole.ROLE_ADMIN.name())).findFirst().orElse(null))
             );
 
             User user1 = new User();
@@ -58,8 +55,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             user1.setEnabled(true);
             user1.setRoles(
                     Set.of(
-                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(CONTENT_EDITOR)).findFirst().orElse(null),
-                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(LOGGED_IN_USER)).findFirst().orElse(null))
+                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(AvailableRole.ROLE_CONTENT_EDITOR.name())).findFirst().orElse(null),
+                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(AvailableRole.ROLE_LOGGED_IN_USER.name())).findFirst().orElse(null))
             );
 
             User user2 = new User();
@@ -68,7 +65,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             user2.setEnabled(true);
             user2.setRoles(
                     Set.of(
-                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(CONTENT_EDITOR)).findFirst().orElse(null))
+                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(AvailableRole.ROLE_CONTENT_EDITOR.name())).findFirst().orElse(null))
             );
 
             User user3 = new User();
@@ -77,7 +74,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             user3.setEnabled(true);
             user3.setRoles(
                     Set.of(
-                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(LOGGED_IN_USER)).findFirst().orElse(null))
+                            this.availableRoles.stream().filter(r -> r.getName().equalsIgnoreCase(AvailableRole.ROLE_LOGGED_IN_USER.name())).findFirst().orElse(null))
             );
 
             this.userRepository.saveAll(List.of(admin, user1, user2, user3));
@@ -90,14 +87,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (CollectionUtils.isEmpty(this.roleRepository.findAll())) {
             log.info("Role initiation has started...");
 
-            Role adminRole = Role.builder().name(ADMIN).build();
-            Role contentEditorRole = Role.builder().name(CONTENT_EDITOR).build();
-            Role loggedInUserRole = Role.builder().name(LOGGED_IN_USER).build();
+            Role adminRole = Role.builder().name(AvailableRole.ROLE_ADMIN.name()).build();
+            Role contentEditorRole = Role.builder().name(AvailableRole.ROLE_CONTENT_EDITOR.name()).build();
+            Role loggedInUserRole = Role.builder().name(AvailableRole.ROLE_LOGGED_IN_USER.name()).build();
 
             this.availableRoles = this.roleRepository.saveAll(List.of(adminRole, contentEditorRole, loggedInUserRole));
 
             log.info("Role initiation has finished.");
         }
     }
-
 }

@@ -1,6 +1,6 @@
 package com.icf.backend.security;
 
-import com.icf.backend.util.SecurityUtils;
+import com.icf.backend.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .requestCache().requestCache(new CustomRequestCache())
                 .and().authorizeRequests()
-                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+                .requestMatchers(SecurityUtil::isFrameworkInternalRequest).permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage(LOGIN_URL).permitAll()
@@ -39,18 +39,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl(LOGIN_FAILURE_URL)
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
-
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withUsername("user")
-//                        .password("{noop}password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
 
     @Override
     public void configure(WebSecurity web) {
@@ -72,14 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public AuthenticationManager customAuthenticationManager() throws Exception {
-//        return authenticationManager();
-//    }
-
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-
 }

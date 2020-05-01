@@ -1,5 +1,6 @@
 package com.icf.views.login;
 
+import com.icf.backend.exception.ReCaptchaException;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
@@ -59,7 +60,7 @@ public class ReCaptcha extends Component {
         try {
             valid = checkResponse(response);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ReCaptchaException(e);
         }
     }
 
@@ -74,8 +75,6 @@ public class ReCaptcha extends Component {
 
 
         String result = doHttpPost(url, postData);
-
-        System.out.println("Verify result:\n" + result);
 
         JsonObject parse = Json.parse(result);
         JsonValue jsonValue = parse.get("success");

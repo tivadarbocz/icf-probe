@@ -22,9 +22,7 @@ public class UserPrincipal implements UserDetails {
         final Set<Role> roles = user.getRoles();
         final List<GrantedAuthority> authorities = new ArrayList<>();
 
-        roles.forEach(r -> {
-            authorities.add(new SimpleGrantedAuthority(r.getName()));
-        });
+        roles.forEach(r -> authorities.add(new SimpleGrantedAuthority(r.getName())));
 
         return authorities;
     }
@@ -60,6 +58,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true/*Boolean.TRUE.equals(user.getEnabled())*/;
+        return Boolean.TRUE.equals(user.getEnabled());
     }
 }

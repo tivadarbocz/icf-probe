@@ -1,8 +1,12 @@
 package com.icf.views.main;
 
+import com.icf.backend.enumeration.AvailableRole;
+import com.icf.backend.model.Role;
+import com.icf.backend.model.UserPrincipal;
+import com.icf.backend.util.SecurityUtil;
+import com.icf.views.admin.AdminView;
 import com.icf.views.content.ContentEditorView;
 import com.icf.views.dashboard.DashboardView;
-import com.icf.views.masterdetail.MasterDetailView;
 import com.icf.views.user.LoggedInUserView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -10,8 +14,10 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
@@ -21,11 +27,11 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-//import com.icf.views.dashboard.DashboardView;
+import java.util.stream.Collectors;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -36,55 +42,80 @@ import java.util.Optional;
 public class MainView extends AppLayout {
 
     private final Tabs menu;
+    private final UserPrincipal loggedUser;
 
     public MainView() {
-        setPrimarySection(Section.DRAWER);
-        addToNavbar(true, new DrawerToggle());
-        menu = createMenuTabs();
-        addToDrawer(menu);
+        this.loggedUser = SecurityUtil.getLoggedUser();
+        this.setPrimarySection(Section.DRAWER);
+        this.addToNavbar(true, new DrawerToggle());
+        this.menu = this.createMenuTabs();
+        this.addToDrawer(this.createUserInfoLayout());
+        this.addToDrawer(this.menu);
     }
 
-    private static Tabs createMenuTabs() {
+    private Tabs createMenuTabs() {
         final Tabs tabs = new Tabs();
+
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
         tabs.setId("tabs");
         tabs.add(getAvailableTabs());
+
         return tabs;
     }
 
-    private static Tab[] getAvailableTabs() {
+    private VerticalLayout createUserInfoLayout() {
+        final VerticalLayout vlUserInfo = new VerticalLayout();
+        final Icon iconUser = new Icon(VaadinIcon.USER);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        vlUserInfo.add(iconUser);
+        vlUserInfo.add(new H6(this.loggedUser.getUsername()));
+        vlUserInfo.add(new H6(this.loggedUser.getUser().getLastLoggedInAt().format(formatter)));
+        vlUserInfo.add(new H6(this.loggedUser.getUser().getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(", "))));
+
+        return vlUserInfo;
+    }
+
+    private Tab[] getAvailableTabs() {
         final List<Tab> tabs = new ArrayList<>();
-        final Anchor logout = new Anchor("/logout", new Icon(VaadinIcon.EXIT));
+        final Anchor logout = new Anchor("/logout", "Logout");
 
         tabs.add(createTab("Dashboard", DashboardView.class));
-        tabs.add(createTab("Master-Detail", MasterDetailView.class));
-        tabs.add(createTab("Content", ContentEditorView.class));
-        tabs.add(createTab("Logged in user  ", LoggedInUserView.class));
+
+        if (SecurityUtil.givenUserHasRole(this.loggedUser, AvailableRole.ROLE_ADMIN.name())) {
+            tabs.add(createTab("Admin", AdminView.class));
+        }
+
+        if (SecurityUtil.givenUserHasRole(this.loggedUser, AvailableRole.ROLE_CONTENT_EDITOR.name()) || SecurityUtil.givenUserHasRole(loggedUser, AvailableRole.ROLE_ADMIN.name())) {
+            tabs.add(createTab("Content", ContentEditorView.class));
+        }
+
+        if (SecurityUtil.givenUserHasRole(this.loggedUser, AvailableRole.ROLE_LOGGED_IN_USER.name()) || SecurityUtil.givenUserHasRole(loggedUser, AvailableRole.ROLE_ADMIN.name())) {
+            tabs.add(createTab("Logged in user  ", LoggedInUserView.class));
+        }
+
         tabs.add(createTab(logout));
 
         return tabs.toArray(new Tab[tabs.size()]);
     }
 
-    private static Tab createTab(String title, Class<? extends Component> viewClass) {
+    private Tab createTab(String title, Class<? extends Component> viewClass) {
         return createTab(populateLink(new RouterLink(null, viewClass), title));
     }
 
-    private static Tab createTab(Component content) {
+    private Tab createTab(Component content) {
         final Tab tab = new Tab();
         tab.add(content);
         return tab;
     }
 
-    private static <T extends HasComponents> T populateLink(T a, String title) {
+    private <T extends HasComponents> T populateLink(T a, String title) {
         a.add(title);
         return a;
-    }
-
-    @Override
-    protected void afterNavigation() {
-        super.afterNavigation();
-        selectTab();
     }
 
     private void selectTab() {
@@ -94,5 +125,11 @@ public class MainView extends AppLayout {
             return child instanceof RouterLink && ((RouterLink) child).getHref().equals(target);
         }).findFirst();
         tabToSelect.ifPresent(tab -> menu.setSelectedTab((Tab) tab));
+    }
+
+    @Override
+    protected void afterNavigation() {
+        super.afterNavigation();
+        selectTab();
     }
 }

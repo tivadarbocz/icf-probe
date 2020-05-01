@@ -1,4 +1,4 @@
-package com.icf.views.dashboard;
+package com.icf.views.badge;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;

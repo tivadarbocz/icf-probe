@@ -29,12 +29,11 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 128)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER) //TODO
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     private LocalDateTime lastLoggedInAt;
 
     private Boolean enabled;
-
 }

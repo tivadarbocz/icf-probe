@@ -1,6 +1,6 @@
 package com.icf.backend.security;
 
-import com.icf.backend.util.SecurityUtils;
+import com.icf.backend.util.SecurityUtil;
 import com.icf.views.login.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -21,7 +21,7 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
 
     private void authenticateNavigation(BeforeEnterEvent event) {
         if (!LoginView.class.equals(event.getNavigationTarget())
-                && !SecurityUtils.isUserLoggedIn()) {
+                && !SecurityUtil.isUserLoggedIn()) {
             event.rerouteTo(LoginView.class);
         }
     }

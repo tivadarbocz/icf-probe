@@ -1,7 +1,7 @@
 package com.icf.views.login;
 
 import com.icf.backend.service.LoginAttemptService;
-import com.icf.backend.util.SecurityUtils;
+import com.icf.backend.util.SecurityUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
@@ -37,7 +37,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         this.setAlignItems(Alignment.CENTER);
         this.setJustifyContentMode(JustifyContentMode.CENTER);
         this.loginForm.setAction("login");
-        this.add(new H1("Vaadin CRM"), this.loginForm);
+        this.add(new H1("Vaadin & Spring Boot"), this.loginForm);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             boolean valid = reCaptcha.isValid();
 
             if (reCaptcha.isValid()) {
-                this.loginAttemptService.loginSucceeded(SecurityUtils.getClientIP(request));
+                this.loginAttemptService.loginSucceeded(SecurityUtil.getClientIP(request));
                 this.reCaptcha.setVisible(false);
                 this.btnValidate.setVisible(false);
                 this.loginForm.setVisible(true);
@@ -94,7 +94,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void setCaptchaVisibility() {
-        final String ip = SecurityUtils.getClientIP(request);
+        final String ip = SecurityUtil.getClientIP(request);
         this.reCaptcha.setVisible(loginAttemptService.isBlocked(ip));
     }
 
@@ -105,5 +105,4 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     private void setLoginFormVisibility() {
         this.loginForm.setVisible(!this.reCaptcha.isVisible());
     }
-
 }

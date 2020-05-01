@@ -1,6 +1,6 @@
 package com.icf.backend.security;
 
-import com.icf.backend.util.SecurityUtils;
+import com.icf.backend.util.SecurityUtil;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +13,8 @@ class CustomRequestCache extends HttpSessionRequestCache {
 
     @Override
     public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
-        if (!SecurityUtils.isFrameworkInternalRequest(request)) {
+        if (!SecurityUtil.isFrameworkInternalRequest(request)) {
             super.saveRequest(request, response);
         }
     }
-
 }
