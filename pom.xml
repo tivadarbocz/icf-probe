@@ -56,6 +56,14 @@
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
+
+        <pluginRepository>
+            <id>central2</id>
+            <url>https://repo1.maven.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
     </pluginRepositories>
 
     <dependencyManagement>
