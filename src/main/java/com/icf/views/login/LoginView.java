@@ -1,5 +1,6 @@
 package com.icf.views.login;
 
+import com.icf.backend.config.AppConfig;
 import com.icf.backend.service.LoginAttemptService;
 import com.icf.backend.util.SecurityUtil;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 
 @Route("login")
-@PageTitle("Login | Vaadin CRM")
+@PageTitle("Vaadin | Spring Boot")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     @Autowired
@@ -26,6 +27,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    private AppConfig appConfig;
 
     private ReCaptcha reCaptcha;
     private Button btnValidate;
@@ -37,7 +41,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         this.setAlignItems(Alignment.CENTER);
         this.setJustifyContentMode(JustifyContentMode.CENTER);
         this.loginForm.setAction("login");
-        this.add(new H1("Vaadin & Spring Boot"), this.loginForm);
+        this.add(new H1("Vaadin | Spring Boot"), this.loginForm);
     }
 
     @Override
@@ -59,19 +63,19 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private void initAndAddCaptcha() {
         this.reCaptcha = new ReCaptcha(
-                "6LfN5e8UAAAAAN81Mj3z2VdlUbWJ9SA2VuK1cxWd",
-                "6LfN5e8UAAAAAERZUAGJGHDil6PaARoL_zRph8Zm"
+                this.appConfig.getRecaptchaWebsiteKey(),
+                this.appConfig.getRecaptchaSecretKey()
         );
 
-        this.add(reCaptcha);
+        this.add(this.reCaptcha);
     }
 
     private void initAndAddValidateButton() {
         this.btnValidate = new Button("Validate", event -> {
-            boolean valid = reCaptcha.isValid();
+            boolean valid = this.reCaptcha.isValid();
 
-            if (reCaptcha.isValid()) {
-                this.loginAttemptService.loginSucceeded(SecurityUtil.getClientIP(request));
+            if (this.reCaptcha.isValid()) {
+                this.loginAttemptService.loginSucceeded(SecurityUtil.getClientIP(this.request));
                 this.reCaptcha.setVisible(false);
                 this.btnValidate.setVisible(false);
                 this.loginForm.setVisible(true);
@@ -85,7 +89,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         });
 
-        this.add(btnValidate);
+        this.add(this.btnValidate);
     }
 
     private void setCaptchaComponentsVisibility() {
@@ -94,8 +98,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void setCaptchaVisibility() {
-        final String ip = SecurityUtil.getClientIP(request);
-        this.reCaptcha.setVisible(loginAttemptService.isBlocked(ip));
+        final String ip = SecurityUtil.getClientIP(this.request);
+        this.reCaptcha.setVisible(this.loginAttemptService.isBlocked(ip));
     }
 
     private void setValidateButtonVisibility() {
@@ -105,4 +109,5 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     private void setLoginFormVisibility() {
         this.loginForm.setVisible(!this.reCaptcha.isVisible());
     }
+
 }

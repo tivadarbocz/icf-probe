@@ -17,6 +17,7 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
         WebAuthenticationDetails auth = (WebAuthenticationDetails)
                 e.getAuthentication().getDetails();
 
-        loginAttemptService.loginFailed(auth.getRemoteAddress());
+        this.loginAttemptService.loginFailed(auth.getRemoteAddress());
     }
+
 }

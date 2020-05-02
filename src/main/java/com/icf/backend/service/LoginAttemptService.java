@@ -23,4 +23,5 @@ public interface LoginAttemptService {
      * @param key IP address
      */
     boolean isBlocked(String key);
+
 }

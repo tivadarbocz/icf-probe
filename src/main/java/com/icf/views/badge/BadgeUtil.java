@@ -21,4 +21,5 @@ public class BadgeUtil {
     private BadgeUtil() {
         // Util methods only
     }
+
 }

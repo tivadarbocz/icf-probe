@@ -25,4 +25,5 @@ public class Role extends BaseEntity {
 
     @Column(unique = true, nullable = false, length = 64)
     String name;
+
 }

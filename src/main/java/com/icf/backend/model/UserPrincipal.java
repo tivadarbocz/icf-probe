@@ -19,7 +19,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        final Set<Role> roles = user.getRoles();
+        final Set<Role> roles = this.user.getRoles();
         final List<GrantedAuthority> authorities = new ArrayList<>();
 
         roles.forEach(r -> authorities.add(new SimpleGrantedAuthority(r.getName())));
@@ -28,17 +28,17 @@ public class UserPrincipal implements UserDetails {
     }
 
     public User getUser() {
-        return user;
+        return this.user;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return this.user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return this.user.getUsername();
     }
 
     @Override
@@ -58,6 +58,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return Boolean.TRUE.equals(user.getEnabled());
+        return Boolean.TRUE.equals(this.user.getEnabled());
     }
+
 }

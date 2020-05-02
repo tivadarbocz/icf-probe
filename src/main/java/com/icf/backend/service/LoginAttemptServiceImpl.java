@@ -17,7 +17,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
 
     public LoginAttemptServiceImpl() {
         super();
-        attemptsCache = CacheBuilder.newBuilder().
+        this.attemptsCache = CacheBuilder.newBuilder().
                 expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Integer>() {
             public Integer load(String key) {
                 return 0;
@@ -27,27 +27,28 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
 
     @Override
     public void loginSucceeded(String key) {
-        attemptsCache.invalidate(key);
+        this.attemptsCache.invalidate(key);
     }
 
     @Override
     public void loginFailed(String key) {
         int attempts = 0;
         try {
-            attempts = attemptsCache.get(key);
+            attempts = this.attemptsCache.get(key);
         } catch (ExecutionException e) {
             attempts = 0;
         }
         attempts++;
-        attemptsCache.put(key, attempts);
+        this.attemptsCache.put(key, attempts);
     }
 
     @Override
     public boolean isBlocked(String key) {
         try {
-            return attemptsCache.get(key) >= MAX_ATTEMPT;
+            return this.attemptsCache.get(key) >= MAX_ATTEMPT;
         } catch (ExecutionException e) {
             return false;
         }
     }
+
 }

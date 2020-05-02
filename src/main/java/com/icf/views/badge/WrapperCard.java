@@ -7,13 +7,13 @@ public class WrapperCard extends Div {
 
     public WrapperCard(String className, Component[] components,
                        String... classes) {
-        addClassName(className);
+        this.addClassName(className);
 
         Div card = new Div();
         card.addClassNames(classes);
         card.add(components);
 
-        add(card);
+        this.add(card);
     }
 
 }

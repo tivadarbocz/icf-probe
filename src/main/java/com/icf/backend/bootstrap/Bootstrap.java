@@ -96,4 +96,5 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             log.info("Role initiation has finished.");
         }
     }
+
 }

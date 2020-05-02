@@ -1,7 +1,6 @@
 package com.icf.views.dashboard;
 
 import com.icf.views.main.MainView;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -12,7 +11,6 @@ import com.vaadin.flow.router.RouteAlias;
 @Route(value = "dashboard", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Dashboard")
-@CssImport(value = "styles/views/dashboard/dashboard-view.css", include = "lumo-badge")
 @JsModule("@vaadin/vaadin-lumo-styles/badge.js")
 public class DashboardView extends Div {
 
@@ -22,4 +20,5 @@ public class DashboardView extends Div {
         this.h2Dashboard.setText("Dashboard");
         this.add(this.h2Dashboard);
     }
+
 }

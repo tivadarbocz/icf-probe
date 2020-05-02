@@ -18,33 +18,33 @@ class LoginAttemptServiceImplTest {
 
     @Test
     void isBlockedTest() {
-        Assert.assertFalse(loginAttemptService.isBlocked(KEY_127_0_0_1));
+        Assert.assertFalse(this.loginAttemptService.isBlocked(KEY_127_0_0_1));
     }
 
     @Test
     void isBlockedTestWith2WrongAttempts() {
-        loginAttemptService.loginFailed(KEY_127_0_0_2);
-        loginAttemptService.loginFailed(KEY_127_0_0_2);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_2);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_2);
 
-        Assert.assertFalse(loginAttemptService.isBlocked(KEY_127_0_0_2));
+        Assert.assertFalse(this.loginAttemptService.isBlocked(KEY_127_0_0_2));
     }
 
     @Test
     void isBlockedTestWith3WrongAttempts() {
-        loginAttemptService.loginFailed(KEY_127_0_0_3);
-        loginAttemptService.loginFailed(KEY_127_0_0_3);
-        loginAttemptService.loginFailed(KEY_127_0_0_3);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_3);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_3);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_3);
 
-        Assert.assertTrue(loginAttemptService.isBlocked(KEY_127_0_0_3));
+        Assert.assertTrue(this.loginAttemptService.isBlocked(KEY_127_0_0_3));
     }
 
     @Test
     void loginSucceededTest() {
-        loginAttemptService.loginFailed(KEY_127_0_0_4);
-        loginAttemptService.loginFailed(KEY_127_0_0_4);
-        loginAttemptService.loginFailed(KEY_127_0_0_4);
-        loginAttemptService.loginSucceeded(KEY_127_0_0_4);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_4);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_4);
+        this.loginAttemptService.loginFailed(KEY_127_0_0_4);
+        this.loginAttemptService.loginSucceeded(KEY_127_0_0_4);
 
-        Assert.assertFalse(loginAttemptService.isBlocked(KEY_127_0_0_4));
+        Assert.assertFalse(this.loginAttemptService.isBlocked(KEY_127_0_0_4));
     }
 }

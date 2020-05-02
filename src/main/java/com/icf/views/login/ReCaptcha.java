@@ -35,12 +35,12 @@ public class ReCaptcha extends Component {
         div.setAttribute("class", "g-recaptcha");
         div.setAttribute("data-sitekey", websiteKey);
         div.setAttribute("data-callback", "myCallback"); // Note that myCallback must be declared in the global scope.
-        getElement().appendChild(div);
+        this.getElement().appendChild(div);
 
         Element script = new Element("script");
         script.setAttribute("type", "text/javascript");
         script.setAttribute("src", "https://www.google.com/recaptcha/api.js?hl=en");
-        getElement().appendChild(script);
+        this.getElement().appendChild(script);
 
         UI.getCurrent().getPage().executeJs("$0.init = function () {\n" +
                 "    function myCallback(token) {\n" +
@@ -52,13 +52,13 @@ public class ReCaptcha extends Component {
     }
 
     public boolean isValid() {
-        return valid;
+        return this.valid;
     }
 
     @ClientCallable
     public void callback(String response) {
         try {
-            valid = checkResponse(response);
+            this.valid = this.checkResponse(response);
         } catch (IOException e) {
             throw new ReCaptchaException(e);
         }
@@ -69,7 +69,7 @@ public class ReCaptcha extends Component {
 
         String url = "https://www.google.com/recaptcha/api/siteverify";
 
-        String postData = "secret=" + URLEncoder.encode(secretKey, StandardCharsets.UTF_8) +
+        String postData = "secret=" + URLEncoder.encode(this.secretKey, StandardCharsets.UTF_8) +
                 "&remoteip=" + URLEncoder.encode(remoteAddr, StandardCharsets.UTF_8) +
                 "&response=" + URLEncoder.encode(response, StandardCharsets.UTF_8);
 
@@ -81,6 +81,7 @@ public class ReCaptcha extends Component {
         return jsonValue != null && jsonValue.asBoolean();
     }
 
+    //todo
     private static String getRemoteAddr(VaadinRequest request) {
         String ret = request.getHeader("x-forwarded-for");
         if (ret == null || ret.isEmpty()) {
@@ -118,4 +119,5 @@ public class ReCaptcha extends Component {
             con.disconnect();
         }
     }
+
 }

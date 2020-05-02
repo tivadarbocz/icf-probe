@@ -36,4 +36,5 @@ public class User extends BaseEntity {
     private LocalDateTime lastLoggedInAt;
 
     private Boolean enabled;
+
 }
