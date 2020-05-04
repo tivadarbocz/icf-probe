@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @Service
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final LoginAttemptService loginAttemptService;
-    private final HttpServletRequest request;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -30,7 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        user.getRoles().size(); // init lazy association
+        // init lazy association
+        user.getRoles().size();
+
         return new UserPrincipal(this.updateLoginInformationAndGet(user));
     }
 
