@@ -1,13 +1,14 @@
 package com.icf.views.login;
 
 import com.icf.backend.exception.ReCaptchaException;
+import com.icf.backend.util.SecurityUtil;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
 import elemental.json.Json;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
@@ -65,7 +66,7 @@ public class ReCaptcha extends Component {
     }
 
     private boolean checkResponse(String response) throws IOException {
-        String remoteAddr = getRemoteAddr(VaadinService.getCurrentRequest());
+        String remoteAddr = SecurityUtil.getClientIP(((VaadinServletRequest) VaadinService.getCurrentRequest()).getHttpServletRequest());
 
         String url = "https://www.google.com/recaptcha/api/siteverify";
 
@@ -79,15 +80,6 @@ public class ReCaptcha extends Component {
         JsonObject parse = Json.parse(result);
         JsonValue jsonValue = parse.get("success");
         return jsonValue != null && jsonValue.asBoolean();
-    }
-
-    //todo
-    private static String getRemoteAddr(VaadinRequest request) {
-        String ret = request.getHeader("x-forwarded-for");
-        if (ret == null || ret.isEmpty()) {
-            ret = request.getRemoteAddr();
-        }
-        return ret;
     }
 
     private static String doHttpPost(String urlStr, String postData) throws IOException {
